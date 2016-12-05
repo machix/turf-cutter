@@ -1,0 +1,158 @@
+/* Main css
+   ========================================================================= */
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+  background-color: white;
+  color: #333;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+#root > div {
+  height: 100%;
+  width: 100%;
+}
+
+h1, h2, h3, h4, h5 {
+  text-shadow: 1.5px 1.5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.app {
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.header {
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: row;
+  order: 0;
+  height: 48px;
+  line-height: 48px;
+  background-color: #fefefe;
+  box-shadow: 0 0 5px #333;
+  color: #333;
+  padding-left: 1em;
+}
+
+.header-logo {
+  margin-top: .3em;
+  background: url('../img/votivate-logo.png') no-repeat;
+  background-size: 150px;
+  width: 150px;
+}
+
+.map-container {
+  flex: 1 1 100%;
+  order: 1;
+  width: 100%;
+  height: calc(100% - 48px);
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.map {
+  height: 100% !important;
+  width: 100%;
+}
+
+.list {
+  margin: 0;
+  position: relative;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  z-index: 0;
+  transition: all 0.2s ease;
+}
+
+.list-item {
+  text-align: center;
+  align-items: center;
+  padding: 10px;
+  padding-top: 20px;
+  flex: 1 1 250px;
+  list-style: none;
+  border-bottom: 1px solid #fefefe;
+  border-right: 1px solid #fefefe;
+}
+
+.list-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.list-item:active {
+  background-color: #3065b1;
+}
+
+.list-item h3 {
+  font-size: 110%;
+  line-height: 110%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.list-item.selected {
+  background-color: #477ecd;
+  min-height: 110px;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  min-width: 100%;
+}
+
+.list-item.selected h2 {
+  margin-top: 0;
+  text-shadow: 1.5px 1.5px 0 #112541;
+}
+
+.list-item.selected:hover {
+  background-color: #3f78cb;
+  cursor: default;
+}
+
+@media screen and (min-width: 992px) {
+  .app {
+    flex-direction: row;
+  }
+
+  .map {
+    order: 2;
+    height: calc(100% - 40px);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.6em;
+  height: 0.6em;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+}
+
+::-webkit-scrollbar-track {
+  background: #d6d6d6;
+}
+
+body {
+  scrollbar-face-color: #fefefe;
+  scrollbar-track-color: #333;
+}

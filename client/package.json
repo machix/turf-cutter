@@ -1,0 +1,32 @@
+{
+  "name": "votivate-client",
+  "version": "0.0.1",
+  "private": true,
+  "proxy": "http://localhost:3001/",
+  "devDependencies": {
+    "react-scripts": "0.7.0"
+  },
+  "dependencies": {
+    "auth0-lock": "^10.7.2",
+    "history": "^4.2.0",
+    "lodash": "^4.17.2",
+    "mongodb": "^2.2.11",
+    "re-base": "^2.2.0",
+    "react": "latest",
+    "react-dom": "^15.4.1",
+    "react-google-maps": "^6.0.1",
+    "react-icons": "^2.2.1",
+    "react-router": "latest",
+    "semantic-ui-css": "^2.2.4",
+    "semantic-ui-react": "^0.61.7"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  }
+}
