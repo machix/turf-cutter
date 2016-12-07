@@ -13,6 +13,7 @@ const MongoClient = require('mongodb').MongoClient;
 const getToken = require('./routes/get-token');
 const apiIndex = require('./routes/api/index');
 const turf = require('./routes/api/turf');
+const addresses = require('./routes/api/addresses');
 const geocode = require('./routes/api/geocode');
 
 dotenv.load();
@@ -61,6 +62,7 @@ app.use('/get-token', getToken);
 // });
 app.use('/api', apiIndex);
 app.use('/api/turf', turf);
+app.use('/api/addresses', addresses);
 app.use('/api/geocode', geocode);
 
 

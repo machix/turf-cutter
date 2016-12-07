@@ -60,6 +60,8 @@ h1, h2, h3, h4, h5 {
 
 .map-container {
   flex: 1 1 100%;
+  position: relative;
+  overflow: hidden;
   order: 1;
   width: 100%;
   height: calc(100% - 48px);
@@ -72,6 +74,18 @@ h1, h2, h3, h4, h5 {
   height: 100% !important;
   width: 100%;
 }
+
+.map-container:before, .map-container:after, .map:before, .map:after {
+  content: '';
+  position: absolute;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.map-container:before { top: -5px; left: 0; right: 0; height: 5px; }
+.map-container:after { right: -5px; top: 0; bottom: 0; width: 5px; }
+.map:before { bottom: -5px; left: 0; right: 0; height: 5px; }
+.map:after { left: -5px; top: 0; bottom: 0; width: 5px; }
 
 .list {
   margin: 0;

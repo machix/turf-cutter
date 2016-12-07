@@ -12,8 +12,10 @@ export default class App extends React.Component {
 
   state = {
     turf: [],
+    addresses: [],
     zoom: 15,
-    center: { lat: 40.754204, lng: -73.601047 }
+    center: { lat: 40.754204, lng: -73.601047 },
+    loading: 'active'
   }
 
   componentWillMount() {
@@ -21,15 +23,19 @@ export default class App extends React.Component {
       this.setState({
         turf: res
       });
+      Data.get('addresses', undefined, (res) => {
+        this.setState({
+          addresses: res,
+          loading: null
+        });
+      });
     });
   }
 
   render() {
-    let loaded;
-    if (!this.state.turf) loaded = 'active';
     return (
       <div className="app">
-        <Dimmer className={loaded}>
+        <Dimmer className={this.state.loading}>
           <Loader size="large">Loading...</Loader>
         </Dimmer>
         <Header lock={this.lock} />

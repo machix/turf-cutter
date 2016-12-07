@@ -1,8 +1,9 @@
 import config from '../config';
 
 const Data = {
-  post(dataType, data, cb) {
-    const path = `/api/${dataType}`;
+  post(dataType, query, data, cb) {
+    let path;
+    !query ? path = `/api/${dataType}` : path = `/api/${dataType}${query}`;
     return fetch(path, {
       method: 'post',
       body: JSON.stringify(data),
