@@ -17,10 +17,8 @@ MongoClient.connect(mongoUrl, (err, database) => {
   turf = db.collection('turf');
 });
 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({
-  extended: true
-}));
+router.use(bodyParser.json({ limit: '50mb' }));
+router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 router.get('/', (req, res) => {
   const query = req.query.zip || {};

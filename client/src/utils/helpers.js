@@ -142,44 +142,29 @@ export const Zipcodes = {
   }
 };
 
-export const colorGenerator = (col, cb) => {
-  const colors = [
-    { key: 'firetruck-red', val: '#FF0000' },
-    { key: 'dodger-blue', val: '#1E90FF' },
-    { key: 'lime-green', val: '#32CD32' },
-    { key: 'dark-orange', val: '#FF8C00' },
-    { key: 'dark-violet', val: '#9400D3' },
-    { key: 'electric-yellow', val: '#FFFF00' },
-    { key: 'cherry-red', val: '#DB3069' },
-    { key: 'yale-blue', val: '#1446A0' },
-    { key: 'forest-green', val: '#228B22' },
-    { key: 'orioles-orange', val: '#FF5714' },
-    { key: 'turquoise', val: '#40E0D0' },
-    { key: 'fire-rose', val: '#FF5376' },
-    { key: 'gold-yellow', val: '#FFDF00' },
-    { key: 'meridian-red', val: '#ff3232' },
-    { key: 'malachite-green', val: '#33EA52' },
-    { key: 'coral-orange', val: '#FF7F50' },
-    { key: 'orchid-purple', val: '#BA55D3' },
-    { key: 'wizard-blue', val: '#9ED5FF' },
-    { key: 'crimson-red', val: '#DC143C' },
-    { key: 'deep-orange', val: '#FFA500' },
-    { key: 'spring-green', val: '#00FF7F' },
-    { key: 'giant-blue', val: '#0000FF' },
-    { key: 'slate-purple', val: '#8E0999' },
-    { key: 'lemon-yellow', val: '#FFEC00' },
-  ];
-
-  let lastColor;
-  if (!col) lastColor = colors[colors.length - 1].key;
-  else lastColor = col;
-
-  colors.forEach((color, i) => {
-    let newColor = i + 1;
-    if (i === colors.length - 1) newColor = 0;
-    if (color.key === lastColor) {
-      localStorage.setItem('last-color', colors[newColor].key);
-      return cb(colors[newColor]);
-    }
-  });
-};
+export const colors = [
+  { key: 'firetruck-red', val: '#FF0000' },
+  { key: 'dodger-blue', val: '#1E90FF' },
+  { key: 'lime-green', val: '#32CD32' },
+  { key: 'dark-orange', val: '#FF8C00' },
+  { key: 'dark-violet', val: '#9400D3' },
+  { key: 'electric-yellow', val: '#FFFF00' },
+  { key: 'cherry-red', val: '#DB3069' },
+  { key: 'yale-blue', val: '#1446A0' },
+  { key: 'forest-green', val: '#228B22' },
+  { key: 'orioles-orange', val: '#FF5714' },
+  { key: 'turquoise', val: '#40E0D0' },
+  { key: 'fire-rose', val: '#FF5376' },
+  { key: 'gold-yellow', val: '#FFDF00' },
+  { key: 'meridian-red', val: '#ff3232' },
+  { key: 'malachite-green', val: '#33EA52' },
+  { key: 'coral-orange', val: '#FF7F50' },
+  { key: 'orchid-purple', val: '#BA55D3' },
+  { key: 'wizard-blue', val: '#9ED5FF' },
+  { key: 'crimson-red', val: '#DC143C' },
+  { key: 'deep-orange', val: '#FFA500' },
+  { key: 'spring-green', val: '#00FF7F' },
+  { key: 'giant-blue', val: '#0000FF' },
+  { key: 'slate-purple', val: '#8E0999' },
+  { key: 'lemon-yellow', val: '#FFEC00' },
+];

@@ -2,7 +2,6 @@ const express = require('express');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const http = require('http');
@@ -38,8 +37,6 @@ console.log(secret); */
 app.use(cors());
 app.use(favicon(`${__dirname}/public/favicon.ico`));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.get('/ping', (req, res) => {

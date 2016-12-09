@@ -61,6 +61,8 @@ router.post('/', (req, res) => {
           if (err) throw err;
           if (!cursor) {
             const newAddress = geo2[0];
+            newAddress.turfId = null;
+            newAddress.iconColor = '#111111';
             newAddress.created_at = new Date();
             newAddress.updated_at = new Date();
             db.collection('addresses').save(newAddress, (err) => {

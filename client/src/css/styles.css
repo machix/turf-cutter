@@ -58,6 +58,18 @@ h1, h2, h3, h4, h5 {
   width: 150px;
 }
 
+.map-loading-container {
+  flex: 1 1 100%;
+  position: relative;
+  overflow: hidden;
+  order: 1;
+  width: 100%;
+  height: calc(100% - 48px);
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .map-container {
   flex: 1 1 100%;
   position: relative;

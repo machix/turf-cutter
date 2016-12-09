@@ -1,20 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { flow } from 'lodash';
 import { withGoogleMap, GoogleMap, Marker, Polygon } from 'react-google-maps';
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs';
 import DrawingManager from 'react-google-maps/lib/drawing/DrawingManager';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import Data from '../utils/Data';
-import { colorGenerator } from '../utils/helpers';
+import { colors } from '../utils/helpers';
 import mapStyles from '../utils/map-styles';
 
 const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
   /* eslint-disable no-undef */
-
   return (
     <GoogleMap
       ref={props.onMapLoad}
-      defaultZoom={props.zoom}
+      defaultZoom={props.initialZoom}
       defaultCenter={props.center}
       options={{
         disableDoubleClickZoom: true,
@@ -22,7 +21,7 @@ const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
         minZoom: 14
       }}
       onRightClick={props.handleMapRightClick}
-      onZoomChanged={props.handleZoomChange}
+      // onZoomChanged={props.handleZoomChange}
     >
       <DrawingManager
         // defaultDrawingMode={google.maps.drawing.OverlayType.POLYGON}
@@ -37,9 +36,8 @@ const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
         }}
         onPolygonComplete={props.handleTurfCreation}
       />
-      {props.turf.map((turf) => {
-        const onClick = () => props.handleTurfClick(turf);
-        // const onMouseUp = () => props.handleTurfMouseUp(turf);
+      {props.turf.map((turf, i) => {
+        const onClick = () => props.selectTurf(turf);
         const options = {
           clickable: turf.clickable,
           strokeWeight: turf.strokeWeight,
@@ -49,9 +47,10 @@ const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
         };
         return (
           <Polygon
+            key={i}
+            index={i}
             id={turf._id}
             ref={props.handleTurfRefs}
-            key={`turf-${turf._id}`}
             path={turf.path}
             options={options}
             onClick={onClick}
@@ -59,15 +58,11 @@ const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
           />
         );
       })}
-      {props.markers.map((marker) => {
+      {props.addresses.map((address, i) => {
         let iconColor = '#111111';
-        const point = new google.maps.LatLng(marker.latitude, marker.longitude);
-        props.turfPolygons.forEach((polygon) => {
-          if (google.maps.geometry.poly.containsLocation(point, polygon)) {
-            iconColor = polygon.strokeColor;
-          }
-        });
-        const onClick = () => props.handleMarkerClick(marker);
+        if (address.iconColor) iconColor = address.iconColor;
+        const point = new google.maps.LatLng(address.latitude, address.longitude);
+        const onClick = () => props.handleMarkerClick(address);
         const houseIcon = {
           url: `data:image/svg+xml;utf-8, \
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="20" height="20" > \
@@ -81,11 +76,13 @@ const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
         };
         return (
           <Marker
-            key={`address-${marker._id}`}
+            key={i}
+            index={i}
+            turfId={address.turfId ? address.turfId : ''}
             position={point}
             icon={houseIcon}
-            // onClick={onClick}
-            {...marker}
+            onClick={onClick}
+            {...address}
           />
         );
       })}
@@ -93,56 +90,21 @@ const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
   );
 });
 
-export default class Map extends React.Component {
-  static propTypes = {
-    turf: React.PropTypes.object,
-    center: React.PropTypes.object
-  }
-
-  state = {
-    turf: [],
-    turfPolygons: [],
-    addresses: []
-  }
-
+export default class Map extends Component {
   handleMapLoad = (map) => {
     this._mapComponent = map; // eslint-disable-line no-underscore-dangle
-    const polygons = [];
-    for (let i = 0; i < this.props.turf.length; i++) { // eslint-disable-line
-      const polygon = new google.maps.Polygon({
-        id: this.props.turf[i]._id,
-        path: this.props.turf[i].path,
-        strokeColor: this.props.turf[i].strokeColor
-      });
-      polygons.push(polygon);
-    }
-    this.setState({
-      turf: this.props.turf,
-      turfPolygons: polygons,
-    });
   }
 
   handleZoomChange = () => {
-    const zoom = this._mapComponent.getZoom();
-    if (zoom === 16) {
-      this.setState({
-        addresses: []
-      });
-    } else if (zoom === 17) {
-      this.setState({
-        addresses: this.props.addresses
-      });
-    }
+    // SOOO laggy, disabled for now
+    const zoomLevel = this._mapComponent.getZoom();
+    this.props.changeZoom(zoomLevel);
   }
 
   handleMapRightClick = (e) => {
     Data.post('geocode', undefined, e.latLng, (res) => {
       if (!res.error) {
-        const addresses = this.state.addresses;
-        addresses.push(res);
-        this.setState({
-          addresses
-        });
+        this.props.addAddress(res);
       } else { console.log(res.error); }
     });
   }
@@ -150,183 +112,91 @@ export default class Map extends React.Component {
   handleTurfRightClick = (e) => {
     Data.post('geocode', undefined, e.latLng, (res) => {
       if (!res.error) {
-        const addresses = this.state.addresses;
-        addresses.push(res);
-        this.setState({
-          addresses
-        });
+        this.props.addAddress(res);
       } else { console.log(res.error); }
     });
   }
 
   handleTurfCreation = (polygon) => {
-    let lastColor;
+    let color;
+    let lastColor = colors[colors.length - 1].key;
     if (localStorage.getItem('last-color')) {
       lastColor = localStorage.getItem('last-color');
     }
-    colorGenerator(lastColor, (color) => {
-      const options = {
-        clickable: true,
-        strokeWeight: 2.0,
-        strokeColor: color.val,
-        fillColor: color.val
-      };
-
-      polygon.setOptions(options);
-
-      const polygonData = options;
-      polygonData.path = polygon.getPath().getArray();
-
-      polygon.setMap(null);
-
-      Data.post('turf', undefined, polygonData, (res) => {
-        if (!res.error) {
-          const turf = this.state.turf;
-          const turfPolygons = this.state.turfPolygons;
-          const newPolygon = new google.maps.Polygon({
-            id: res._id,
-            path: res.path,
-            strokeColor: res.strokeColor
-          });
-          turfPolygons.push(newPolygon);
-          turf.push(res);
-          this.setState({
-            turf,
-            turfPolygons
-          });
-        } else { console.log(res.error); }
-      });
+    colors.forEach((c, i) => {
+      let newColor = i + 1;
+      if (i === colors.length - 1) newColor = 0;
+      if (c.key === lastColor) {
+        color = colors[newColor];
+        localStorage.setItem('last-color', colors[newColor].key);
+      }
     });
-  }
+    const options = {
+      clickable: true,
+      strokeWeight: 2.0,
+      strokeColor: color.val,
+      fillColor: color.val
+    };
 
-  handleTurfClick = (targetTurf) => {
-    if (!targetTurf.editable) {
-      this.setState({
-        turf: this.state.turf.map((turf) => {
-          if (turf === targetTurf) {
-            return {
-              ...turf,
-              editable: true,
-              strokeWeight: 3
-            };
-          }
-          return {
-            ...turf,
-            editable: false,
-            strokeWeight: 2
-          };
-        })
-      });
-    } else {
-      this.setState({
-        turf: this.state.turf.map((turf) => {
-          return {
-            ...turf,
-            editable: false,
-            strokeWeight: 2
-          };
-        })
-      });
-    }
+    polygon.setOptions(options);
+
+    const polygonData = options;
+    polygonData.path = polygon.getPath().getArray();
+
+    // save parsed polygon data to db
+    Data.post('turf', undefined, polygonData, (res) => {
+      if (!res.error) {
+        // update addresses if within turf
+        this.props.assignAddressesToTurf(res._id, res.strokeColor, res.path, this.props.addresses);
+        // call reducer to update state with saved data
+        this.props.createTurf(res);
+        // remove drawn polygon from map
+        polygon.setMap(null);
+        // save addresses to the server
+        Data.post('addresses', undefined, this.props.addresses, (res) => {
+          if (res.error) return console.log(res.error);
+          return console.log('Addresses saved!');
+        });
+      } else { console.log(res.error); } // eslint-disable-line no-console
+    });
   }
 
   handleTurfRefs = (turfRef) => {
+    const listener = (path, type) => {
+      google.maps.event.addListener(path, type, () => {
+        // save turf to db
+        Data.post('turf', `?id=${turfRef.props.id}`, {
+          path: turfRef.getPath().getArray()
+        }, (res) => {
+          if (res.error) return console.log(res.error);
+          // oddly enough, this feels much faster inside here.
+          const pathArray = turfRef.getPath().getArray();
+          const i = turfRef.props.index;
+          const { turf, addresses } = this.props;
+          // call actions to save turf and address state
+          this.props.editTurf(pathArray, i);
+          // except this is pretty slow
+          this.props.assignAddressesToTurf(turf[i]._id, turf[i].strokeColor, pathArray, addresses);
+          // add the listeners again
+          turfRef.getPaths().forEach((newPath) => {
+            listener(newPath, 'set_at');
+            listener(newPath, 'insert_at');
+            listener(newPath, 'remove_at');
+          });
+          // save addresses to db
+          Data.post('addresses', undefined, this.props.addresses, (res) => {
+            if (res.error) return console.log(res.error);
+            return console.log('Turf and addresses saved!');
+          });
+        });
+      });
+    };
+
     turfRef.getPaths().forEach((path) => {
-      google.maps.event.addListener(path, 'insert_at', () => {
-        Data.post('turf', `?id=${turfRef.props.id}`, {
-          path: turfRef.getPath().getArray()
-        }, (res) => {
-          if (!res.error) {
-            const turf = this.state.turf.map((t) => {
-              if (t._id === res._id) return res;
-              return t;
-            });
-            const turfPolygons = this.state.turfPolygons.map((p) => {
-              if (p.id === res._id) {
-                const newP = new google.maps.Polygon({
-                  id: res._id,
-                  path: res.path,
-                  strokeColor: res.strokeColor
-                });
-                console.log(newP);
-                return newP;
-              }
-              return p;
-            });
-            this.setState({
-              turf,
-              turfPolygons
-            });
-          } else { console.log(res.error); }
-        });
-      });
-
-      google.maps.event.addListener(path, 'remove_at', () => {
-        Data.post('turf', `?id=${turfRef.props.id}`, {
-          path: turfRef.getPath().getArray()
-        }, (res) => {
-          if (!res.error) {
-            const turf = this.state.turf.map((t) => {
-              if (t._id === res._id) return res;
-              return t;
-            });
-            const turfPolygons = this.state.turfPolygons.map((p) => {
-              if (p.id === res._id) {
-                const newP = new google.maps.Polygon({
-                  id: res._id,
-                  path: res.path,
-                  strokeColor: res.strokeColor
-                });
-                return newP;
-              }
-              return p;
-            });
-            this.setState({
-              turf,
-              turfPolygons
-            });
-          } else { console.log(res.error); }
-        });
-      });
-
-      google.maps.event.addListener(path, 'set_at', () => {
-        Data.post('turf', `?id=${turfRef.props.id}`, {
-          path: turfRef.getPath().getArray()
-        }, (res) => {
-          if (!res.error) {
-            const turf = this.state.turf.map((t) => {
-              if (t._id === res._id) return res;
-              return t;
-            });
-            const turfPolygons = this.state.turfPolygons.map((p) => {
-              if (p.id === res._id) {
-                const newP = new google.maps.Polygon({
-                  id: res._id,
-                  path: res.path,
-                  strokeColor: res.strokeColor
-                });
-                console.log(newP);
-                return newP;
-              }
-              return p;
-            });
-            this.setState({
-              turf,
-              turfPolygons
-            });
-          } else { console.log(res.error); }
-        });
-      });
+      listener(path, 'set_at');
+      listener(path, 'insert_at');
+      listener(path, 'remove_at');
     });
-
-    // google.maps.event.addListener(turf, 'mouseup', () => {
-    //   console.log('mouseup!');
-    //   turf.getPaths().forEach((path, index) => {
-    //     google.maps.event.clearListeners(path, 'insert_at');
-    //     google.maps.event.clearListeners(path, 'remove_at');
-    //     google.maps.event.clearListeners(path, 'set_at');
-    //   });
-    // });
   }
 
   handleMarkerClick = (targetMarker) => {
@@ -335,17 +205,17 @@ export default class Map extends React.Component {
 
   render() {
     let loaded;
-    // if map takes longer to load than turf, use a loader
-    if (this.props.turf.length > 0 && !this._mapComponent) {
+    // if map takes longer to load than turf and addresses, use a loader
+    if (!this._mapComponent) {
       loaded = 'active';
     }
     return (
       <AsyncGoogleMap
         googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDWr-TXd0GmwW_Ykwp4tx1L-1gDxNmLiyc&libraries=drawing,geometry"
         loadingElement={
-          <div style={{ height: '100%' }}>
+          <div className="map-loading-container">
             <Dimmer className={loaded}>
-              <Loader size="small" />
+              <Loader size="medium">Loading Map...</Loader>
             </Dimmer>
           </div>
         }
@@ -356,18 +226,17 @@ export default class Map extends React.Component {
           <div className="map" />
         }
         onMapLoad={this.handleMapLoad}
-        markers={this.state.addresses}
-        turf={this.state.turf}
-        turfPolygons={this.state.turfPolygons}
-        handleMapRightClick={this.handleMapRightClick}
-        handleZoomChange={this.handleZoomChange}
-        handleTurfCreation={this.handleTurfCreation}
-        handleTurfClick={this.handleTurfClick}
-        handleTurfRightClick={this.handleTurfRightClick}
-        handleTurfRefs={this.handleTurfRefs}
-        handleMarkerClick={this.handleMarkerClick}
         center={this.props.center}
-        zoom={this.props.zoom}
+        initialZoom={this.props.zoom}
+        handleZoomChange={this.handleZoomChange}
+        turf={this.props.turf}
+        handleTurfCreation={this.handleTurfCreation}
+        selectTurf={this.props.selectTurf}
+        handleTurfRefs={this.handleTurfRefs}
+        addresses={this.props.addresses}
+        handleMapRightClick={this.handleMapRightClick}
+        handleTurfRightClick={this.handleTurfRightClick}
+        handleMarkerClick={this.handleMarkerClick}
       />
     );
   }
