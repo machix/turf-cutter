@@ -57,22 +57,17 @@ export const stateNames = [
 export const formattedStates = (statesData) => {
   if (!statesData) return stateNames;
 
-  const stateOptions = [];
-
-  for (const stateName of stateNames) {
-    statesData.forEach((stateData) => {
-      if (stateData._id === stateName.value) {
-        const newState = {
+  return statesData.map((state) => {
+    this.statesNames.forEach((stateName) => {
+      if (state._id === stateName.value) {
+        return {
           value: stateName.value,
           text: stateName.text,
-          content: `${stateName.text} - ${String(stateData.count)} venues`
+          content: `${stateName.text} - ${String(state.count)} venues`,
         };
-        stateOptions.push(newState);
       }
     });
-  }
-
-  return stateOptions;
+  });
 };
 
 export const Zipcodes = {
@@ -118,15 +113,8 @@ export const Zipcodes = {
     const zipData = this.lookup(zip);
     if (zipData.error) return null;
     const allZipcodes = Data.get('zipcodes', 'all=true', res => res);
-    const ret = [];
 
-    for (const z of allZipcodes) {
-      if (this.dist(zip, z) <= parseInt(miles)) {
-        ret.push(z);
-      }
-    }
-
-    return ret;
+    return allZipcodes.filter(z => (this.dist(zip, z) <= parseInt(miles, 10)));
   },
 
   deg2rad(value) {
@@ -139,7 +127,7 @@ export const Zipcodes = {
 
   toKilometers(miles) {
     return Math.round(miles * 1.609344);
-  }
+  },
 };
 
 export const colors = [

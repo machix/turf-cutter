@@ -5,11 +5,8 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const http = require('http');
-const jwt = require('jsonwebtoken');
-const hat = require('hat'); // eslint-disable-line
-const MongoClient = require('mongodb').MongoClient;
+// const jwt = require('jsonwebtoken');
 
-const getToken = require('./routes/get-token');
 const apiIndex = require('./routes/api/index');
 const turf = require('./routes/api/turf');
 const addresses = require('./routes/api/addresses');
@@ -18,18 +15,7 @@ const geocode = require('./routes/api/geocode');
 dotenv.load();
 
 const app = express();
-
 const port = process.env.PORT || 3001;
-const mongoUrl = 'mongodb://localhost:27017/votivate-dev';
-
-const auth0Keys = {
-  secret: new Buffer(process.env.AUTH0_CLIENT_SECRET, 'base64'),
-  audience: process.env.AUTH0_CLIENT_ID
-};
-
-/* uncomment this to create a new key
-const generatedKey = hat(256, 16);
-console.log(secret); */
 
 /* eslint-disable consistent-return */
 /* eslint-disable no-console */
@@ -42,7 +28,9 @@ app.use(cookieParser());
 app.get('/ping', (req, res) => {
   res.send({ message: 'Server online!' });
 });
-app.use('/get-token', getToken);
+
+/* token authentication disabled for now */
+
 // app.use('/api', (req, res, next) => {
 //   const token = req.body.token || req.query.token || req.headers['x-access-token'];
 //   if (token) {
@@ -62,18 +50,12 @@ app.use('/api/turf', turf);
 app.use('/api/addresses', addresses);
 app.use('/api/geocode', geocode);
 
-
-// Express only serves static client assets in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
 }
 
-MongoClient.connect(mongoUrl, (err) => {
-  if (err) throw err;
-  // only start server if MongoDB connection made
-  http.createServer(app).listen(port, (err) => {
-    console.log(`Find the server at: http://localhost:${port}/`);
-  });
+http.createServer(app).listen(port, (err) => {
+  console.log('The server is online!');
 });
 
 module.exports = app;

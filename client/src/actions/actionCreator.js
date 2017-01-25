@@ -3,7 +3,7 @@ import Data from '../utils/Data';
 // action to change state to isFetching
 export function requestTurf() {
   return {
-    type: 'REQUEST_TURF'
+    type: 'REQUEST_TURF',
     // TODO: add location qualifier
   };
 }
@@ -12,7 +12,7 @@ export function requestTurf() {
 export function receiveTurf(turf) {
   return {
     type: 'RECEIVE_TURF',
-    turf
+    turf,
   };
 }
 
@@ -31,14 +31,14 @@ export function fetchTurf() {
 export function createTurf(newTurf) {
   return {
     type: 'CREATE_TURF',
-    newTurf
+    newTurf,
   };
 }
 
 export function selectTurf(selectedTurf) {
   return {
     type: 'SELECT_TURF',
-    selectedTurf
+    selectedTurf,
   };
 }
 
@@ -46,14 +46,14 @@ export function editTurf(newPath, index) {
   return {
     type: 'EDIT_TURF',
     newPath,
-    index
+    index,
   };
 }
 
 // action to change state to isFetching
 export function requestAddresses() {
   return {
-    type: 'REQUEST_ADDRESSES'
+    type: 'REQUEST_ADDRESSES',
     // TODO: add location qualifier
   };
 }
@@ -62,7 +62,7 @@ export function requestAddresses() {
 export function receiveAddresses(addresses) {
   return {
     type: 'RECEIVE_ADDRESSES',
-    addresses
+    addresses,
   };
 }
 
@@ -83,28 +83,20 @@ export function assignAddressesToTurf(turfId, color, turfPath, addresses) {
     turfId,
     color,
     turfPath,
-    addresses
+    addresses,
   };
 }
 
 export function addAddress(newAddress) {
   return {
     type: 'ADD_ADDRESS',
-    newAddress
+    newAddress,
   };
 }
 
 export function changeZoom(zoomLevel) {
   return {
     type: 'CHANGE_ZOOM',
-    zoomLevel
+    zoomLevel,
   };
 }
-
-// export function removeComment(postId, index) {
-//   return {
-//     type: 'REMOVE_COMMENT',
-//     postId,
-//     index
-//   };
-// }

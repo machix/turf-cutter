@@ -1,16 +1,16 @@
 function addresses(state = {
   isFetching: false,
-  data: []
+  data: [],
 }, action) {
   switch (action.type) {
     case 'REQUEST_ADDRESSES':
       return { ...state,
-        isFetching: true
+        isFetching: true,
       };
     case 'RECEIVE_ADDRESSES':
       return { ...state,
         isFetching: false,
-        data: action.addresses
+        data: action.addresses,
       };
     case 'ASSIGN_ADDRESSES_TO_TURF': {
       /* eslint-disable no-undef */
@@ -22,25 +22,25 @@ function addresses(state = {
           if (google.maps.geometry.poly.containsLocation(point, polygon)) {
             return { ...a,
               turfId: action.turfId,
-              iconColor: action.color
+              iconColor: action.color,
             };
           } else if (a.turfId === action.turfId &&
           !google.maps.geometry.poly.containsLocation(point, polygon)) {
             return { ...a,
               turfId: null,
-              iconColor: '#111111'
+              iconColor: '#111111',
             };
           }
           return a;
-        })
+        }),
         /* eslint-enable no-undef */
       };
     }
     case 'ADD_ADDRESS':
       return { ...state,
         data: [...state.data,
-          { ...action.newAddress }
-        ]
+          { ...action.newAddress },
+        ],
       };
     default:
       return state;

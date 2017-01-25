@@ -1,7 +1,5 @@
 import fetch from 'isomorphic-fetch';
 
-import config from '../utils/config';
-
 /* eslint-disable class-methods-use-this */
 
 const Data = {
@@ -10,11 +8,10 @@ const Data = {
     !query ? path = `/api/${dataType}` : path = `/api/${dataType}${query}`;
     return fetch(path, {
       method: 'get',
-      accept: 'application/json',
-      headers: new Headers({
-        'Content-Type': 'text/plain',
-        'x-access-token': config.clientApiToken
-      })
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     }).then(this.checkStatus)
       .then(this.parseJSON)
       .then(cb);
@@ -28,8 +25,8 @@ const Data = {
       body: JSON.stringify(data),
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     }).then(this.checkStatus)
       .then(this.parseJSON)
       .then(cb);
@@ -53,7 +50,7 @@ const Data = {
 
   parseJSON(response) {
     return response.json();
-  }
+  },
 };
 
 export default Data;

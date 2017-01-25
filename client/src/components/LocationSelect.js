@@ -6,21 +6,21 @@ import Data from '../utils/Data';
 
 export default class LocationSelect extends React.Component {
   static propTypes = {
-    venueCount: React.PropTypes.string
+    venueCount: React.PropTypes.string,
   }
 
   static contextTypes = {
-    router: React.PropTypes.object
+    router: React.PropTypes.object,
   };
 
   state = {
-    states: formattedStates()
+    states: formattedStates(),
   }
 
   componentWillMount = () => {
     Data.get('states', undefined, (res) => {
       this.setState({
-        states: formattedStates(res)
+        states: formattedStates(res),
       });
     });
   }

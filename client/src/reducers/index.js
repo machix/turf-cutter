@@ -6,7 +6,7 @@ import turf from './turf';
 import addresses from './addresses';
 
 const rootReducer = combineReducers({
-  map, turf, addresses, routing: routerReducer
+  map, turf, addresses, routing: routerReducer,
 });
 
 export default rootReducer;

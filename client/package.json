@@ -1,6 +1,8 @@
 {
   "name": "votivate-client",
-  "version": "0.0.1",
+  "author": "Cody Gordon",
+  "license": "UNLICENSED",
+  "version": "0.0.6",
   "private": true,
   "proxy": "http://localhost:3001/",
   "devDependencies": {

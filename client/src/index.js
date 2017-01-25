@@ -19,7 +19,7 @@ function mapStateToProps(state) {
   return {
     map: state.map,
     turf: state.turf,
-    addresses: state.addresses
+    addresses: state.addresses,
   };
 }
 
@@ -36,5 +36,5 @@ render(
       <Route path="*" component={NotFound} />
     </Router>
   </Provider>,
-  document.querySelector('#root')
+  document.querySelector('#root'),
 );

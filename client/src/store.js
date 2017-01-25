@@ -2,28 +2,27 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { browserHistory } from 'react-router';
 import thunk from 'redux-thunk';
-import logger from 'redux-logger';
 
 import rootReducer from './reducers/index';
 
 const defaultState = {
   map: {
     zoom: 15,
-    center: { lat: 40.754204, lng: -73.601047 }
+    center: { lat: 40.754204, lng: -73.601047 },
   },
   turf: {
     isFetching: false,
-    data: []
+    data: [],
   },
   addresses: {
     isFetching: false,
-    data: []
-  }
+    data: [],
+  },
 };
 
 const enhancers = compose(
   applyMiddleware(thunk),
-  window.devToolsExtension ? window.devToolsExtension() : f => f
+  window.devToolsExtension ? window.devToolsExtension() : f => f,
 );
 
 const store = createStore(rootReducer, defaultState, enhancers);

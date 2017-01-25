@@ -8,63 +8,62 @@ import Data from '../utils/Data';
 import { colors } from '../utils/helpers';
 import mapStyles from '../utils/map-styles';
 
-const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
+const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)(props =>
   /* eslint-disable no-undef */
-  return (
-    <GoogleMap
-      ref={props.onMapLoad}
-      defaultZoom={props.initialZoom}
-      defaultCenter={props.center}
-      options={{
-        disableDoubleClickZoom: true,
-        styles: mapStyles,
-        minZoom: 14
-      }}
-      onRightClick={props.handleMapRightClick}
-      // onZoomChanged={props.handleZoomChange}
-    >
-      <DrawingManager
+   (
+     <GoogleMap
+       ref={props.onMapLoad}
+       defaultZoom={props.initialZoom}
+       defaultCenter={props.center}
+       options={{
+         disableDoubleClickZoom: true,
+         styles: mapStyles,
+         minZoom: 14,
+       }}
+       onRightClick={props.handleMapRightClick}
+     >
+       <DrawingManager
         // defaultDrawingMode={google.maps.drawing.OverlayType.POLYGON}
-        defaultOptions={{
-          drawingControl: true,
-          drawingControlOptions: {
-            position: google.maps.ControlPosition.TOP_CENTER,
-            drawingModes: [
-              google.maps.drawing.OverlayType.POLYGON
-            ],
-          }
-        }}
-        onPolygonComplete={props.handleTurfCreation}
-      />
-      {props.turf.map((turf, i) => {
-        const onClick = () => props.selectTurf(turf);
-        const options = {
-          clickable: turf.clickable,
-          strokeWeight: turf.strokeWeight,
-          strokeColor: turf.strokeColor,
-          fillColor: turf.fillColor,
-          editable: turf.editable
-        };
-        return (
-          <Polygon
-            key={i}
-            index={i}
-            id={turf._id}
-            ref={props.handleTurfRefs}
-            path={turf.path}
-            options={options}
-            onClick={onClick}
-            onRightClick={e => props.handleTurfRightClick(e)}
-          />
-        );
-      })}
-      {props.addresses.map((address, i) => {
-        let iconColor = '#111111';
-        if (address.iconColor) iconColor = address.iconColor;
-        const point = new google.maps.LatLng(address.latitude, address.longitude);
-        const onClick = () => props.handleMarkerClick(address);
-        const houseIcon = {
-          url: `data:image/svg+xml;utf-8, \
+         defaultOptions={{
+           drawingControl: true,
+           drawingControlOptions: {
+             position: google.maps.ControlPosition.TOP_CENTER,
+             drawingModes: [
+               google.maps.drawing.OverlayType.POLYGON,
+             ],
+           },
+         }}
+         onPolygonComplete={props.handleTurfCreation}
+       />
+       {props.turf.map((turf, i) => {
+         const onClick = () => props.selectTurf(turf);
+         const options = {
+           clickable: turf.clickable,
+           strokeWeight: turf.strokeWeight,
+           strokeColor: turf.strokeColor,
+           fillColor: turf.fillColor,
+           editable: turf.editable,
+         };
+         return (
+           <Polygon
+             key={i}
+             index={i}
+             id={turf._id}
+             ref={props.handleTurfRefs}
+             path={turf.path}
+             options={options}
+             onClick={onClick}
+             onRightClick={e => props.handleTurfRightClick(e)}
+           />
+         );
+       })}
+       {props.addresses.map((address, i) => {
+         let iconColor = '#111111';
+         if (address.iconColor) iconColor = address.iconColor;
+         const point = new google.maps.LatLng(address.latitude, address.longitude);
+         const onClick = () => props.handleMarkerClick(address);
+         const houseIcon = {
+           url: `data:image/svg+xml;utf-8, \
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="20" height="20" > \
             <style> \
               .st0{stroke:${iconColor};fill:${iconColor};stroke-miterlimit:8;} \
@@ -72,23 +71,22 @@ const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)((props) => {
             <path class="st0" d="M23.74,8.45,12.37.12a.62.62,0,0,0-.74,0L.25,8.45a.62.62,0,0,0,.74,1L12,1.4,23,9.46a.62.62,0,0,0,.74-1Z"/> \
             <path class="st0" d="M20.73,9.6a.62.62,0,0,0-.62.62v9.93h-5V14.73a3.12,3.12,0,1,0-6.24,0v5.42h-5V10.22a.62.62,0,0,0-1.25,0V20.77a.62.62,0,0,0,.62.62H9.51a.62.62,0,0,0,.62-.58.47.47,0,0,0,0,0v-6a1.87,1.87,0,0,1,3.74,0v6a.46.46,0,0,0,0,0,.62.62,0,0,0,.62.58h6.24a.62.62,0,0,0,.62-.62V10.22A.62.62,0,0,0,20.73,9.6Z"/> \
           </svg>`,
-          anchor: new google.maps.Point(8, 10)
-        };
-        return (
-          <Marker
-            key={i}
-            index={i}
-            turfId={address.turfId ? address.turfId : ''}
-            position={point}
-            icon={houseIcon}
-            onClick={onClick}
-            {...address}
-          />
-        );
-      })}
-    </GoogleMap>
-  );
-});
+           anchor: new google.maps.Point(8, 10),
+         };
+         return (
+           <Marker
+             key={i}
+             index={i}
+             turfId={address.turfId ? address.turfId : ''}
+             position={point}
+             icon={houseIcon}
+             onClick={onClick}
+             {...address}
+           />
+         );
+       })}
+     </GoogleMap>
+  ));
 
 export default class Map extends Component {
   handleMapLoad = (map) => {
@@ -105,7 +103,7 @@ export default class Map extends Component {
     Data.post('geocode', undefined, e.latLng, (res) => {
       if (!res.error) {
         this.props.addAddress(res);
-      } else { console.log(res.error); }
+      } else { console.log(res.error); } // eslint-disable-line no-console
     });
   }
 
@@ -113,7 +111,7 @@ export default class Map extends Component {
     Data.post('geocode', undefined, e.latLng, (res) => {
       if (!res.error) {
         this.props.addAddress(res);
-      } else { console.log(res.error); }
+      } else { console.log(res.error); } // eslint-disable-line no-console
     });
   }
 
@@ -135,7 +133,7 @@ export default class Map extends Component {
       clickable: true,
       strokeWeight: 2.0,
       strokeColor: color.val,
-      fillColor: color.val
+      fillColor: color.val,
     };
 
     polygon.setOptions(options);
@@ -154,8 +152,8 @@ export default class Map extends Component {
         polygon.setMap(null);
         // save addresses to the server
         Data.post('addresses', undefined, this.props.addresses, (res) => {
-          if (res.error) return console.log(res.error);
-          return console.log('Addresses saved!');
+          if (res.error) return console.log(res.error); // eslint-disable-line no-console
+          return console.log('Addresses saved!'); // eslint-disable-line no-console
         });
       } else { console.log(res.error); } // eslint-disable-line no-console
     });
@@ -166,9 +164,9 @@ export default class Map extends Component {
       google.maps.event.addListener(path, type, () => {
         // save turf to db
         Data.post('turf', `?id=${turfRef.props.id}`, {
-          path: turfRef.getPath().getArray()
+          path: turfRef.getPath().getArray(),
         }, (res) => {
-          if (res.error) return console.log(res.error);
+          if (res.error) return console.log(res.error); // eslint-disable-line no-console
           // oddly enough, this feels much faster inside here.
           const pathArray = turfRef.getPath().getArray();
           const i = turfRef.props.index;
@@ -185,8 +183,8 @@ export default class Map extends Component {
           });
           // save addresses to db
           Data.post('addresses', undefined, this.props.addresses, (res) => {
-            if (res.error) return console.log(res.error);
-            return console.log('Turf and addresses saved!');
+            if (res.error) return console.log(res.error); // eslint-disable-line no-console
+            return console.log('Turf and addresses saved!'); // eslint-disable-line no-console
           });
         });
       });
@@ -200,7 +198,7 @@ export default class Map extends Component {
   }
 
   handleMarkerClick = (targetMarker) => {
-    console.log(targetMarker);
+    console.log(targetMarker); // eslint-disable-line no-console
   }
 
   render() {

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react';
 
 export default class Header extends React.Component {
   static propTypes = {
-    lock: React.PropTypes.object
+    lock: React.PropTypes.object,
   }
 
   showLock = () => {

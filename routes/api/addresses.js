@@ -2,15 +2,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
+const dotenv = require('dotenv');
 
 const router = express.Router();
-const mongoUrl = 'mongodb://localhost:27017/votivate-dev';
+
+dotenv.load();
+
+const dbUrl = process.env.MLAB_DB_URL;
+const dbUser = process.env.MLAB_DB_USER;
+const dbPass = process.env.MLAB_DB_PASS;
+
 let db;
 let addresses;
 
 /* eslint-disable no-console */
 
-MongoClient.connect(mongoUrl, (err, database) => {
+MongoClient.connect(`mongodb://${dbUser}:${dbPass}@${dbUrl}`, (err, database) => {
   if (err) return console.log(err);
   db = database;
   addresses = db.collection('addresses');

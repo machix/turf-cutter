@@ -1,22 +1,22 @@
 function turf(state = {
   isFetching: false,
-  data: []
+  data: [],
 }, action) {
   switch (action.type) {
     case 'REQUEST_TURF':
       return { ...state,
-        isFetching: true
+        isFetching: true,
       };
     case 'RECEIVE_TURF':
       return { ...state,
         isFetching: false,
-        data: action.turf
+        data: action.turf,
       };
     case 'CREATE_TURF':
       return { ...state,
         data: [...state.data,
-          { ...action.newTurf }
-        ]
+          { ...action.newTurf },
+        ],
       };
     case 'SELECT_TURF':
       return { ...state,
@@ -26,7 +26,7 @@ function turf(state = {
             return { ...t, editable: true };
           }
           return { ...t, editable: false };
-        })
+        }),
       };
     case 'EDIT_TURF': {
       const i = action.index;
@@ -37,8 +37,8 @@ function turf(state = {
           // // replace with edited turf
           { ...state.data[i], path: action.newPath, editable: true },
           // // get array from after one we want to delete
-          ...state.data.slice(i + 1)
-        ]
+          ...state.data.slice(i + 1),
+        ],
       };
     }
     default:
