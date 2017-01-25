@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
   res.status(200).send({
-    message: 'You\'re authenticated! Welcome to the Showspark API!'
+    message: 'You\'re authenticated! Welcome to the Votivate API!'
   });
 });
 
