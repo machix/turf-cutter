@@ -1,7 +1,7 @@
 Votivate Turf Cutter
 =================================
 
-This is a proof-of-concept for a turf cutter featuring persistent turf mapping. Technology used: NodeJS, React, Redux, and MongoDB.
+This is a proof-of-concept for a turf cutter featuring persistent turf mapping. Technology used: NodeJS, React, Redux, MongoDB, and Google Maps API.
 
 **[See the live demo here.](https://votivate-turf-cutter.herokuapp.com)**
 
