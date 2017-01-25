@@ -1,4 +1,4 @@
-Votivate
+Votivate Turf Cutter
 =================================
 
 This is a proof-of-concept for a turf cutter featuring persistent turf mapping. Technology used: NodeJS, React, Redux, and MongoDB.
