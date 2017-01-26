@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Dimmer, Loader } from 'semantic-ui-react';
-import Auth0Lock from 'auth0-lock';
 import Header from './Header';
 import Map from './Map';
-import Data from '../utils/Data';
 
 export default class App extends Component {
   static propTypes = {

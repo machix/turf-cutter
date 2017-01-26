@@ -1,32 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
-const dotenv = require('dotenv');
+
+const mongo = require('../../mongo-connection');
 
 const router = express.Router();
-
-dotenv.load();
-
-const dbUrl = process.env.MLAB_DB_URL;
-const dbUser = process.env.MLAB_DB_USER;
-const dbPass = process.env.MLAB_DB_PASS;
-
-let db;
-let turf;
-
-/* eslint-disable no-console */
-
-console.log(`mongodb://${dbUser}:${dbPass}@${dbUrl}`);
-
-MongoClient.connect(`mongodb://${dbUser}:${dbPass}@${dbUrl}`, (err, database) => {
-  if (err) return console.log(err);
-  db = database;
-  turf = db.collection('turf');
-});
-
 router.use(bodyParser.json({ limit: '50mb' }));
 router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+const db = mongo.getDb();
+const turf = db.collection('turf');
 
 router.get('/', (req, res) => {
   const query = req.query.zip || {};
@@ -63,5 +46,6 @@ router.post('/', (req, res) => {
     });
   } else { return res.json({ error: 'No body...' }); }
 });
+
 
 module.exports = router;

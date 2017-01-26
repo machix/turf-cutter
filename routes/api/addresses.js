@@ -1,27 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
-const dotenv = require('dotenv');
 
+const mongo = require('../../mongo-connection');
+
+const db = mongo.getDb();
 const router = express.Router();
-
-dotenv.load();
-
-const dbUrl = process.env.MLAB_DB_URL;
-const dbUser = process.env.MLAB_DB_USER;
-const dbPass = process.env.MLAB_DB_PASS;
-
-let db;
-let addresses;
-
-/* eslint-disable no-console */
-
-MongoClient.connect(`mongodb://${dbUser}:${dbPass}@${dbUrl}`, (err, database) => {
-  if (err) return console.log(err);
-  db = database;
-  addresses = db.collection('addresses');
-});
+const addresses = db.collection('addresses'); // eslint-disable-line
 
 router.use(bodyParser.json({ limit: '50mb' }));
 router.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -33,6 +18,7 @@ router.get('/', (req, res) => {
     if (result) {
       return res.json(result);
     }
+
     return res.json({ error: 'Zero results. Try refining your query.' });
   });
 });
