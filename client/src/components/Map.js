@@ -142,6 +142,7 @@ export default class Map extends Component {
     polygonData.path = polygon.getPath().getArray();
 
     // save parsed polygon data to db
+    // TODO: use redux actions for this
     Data.post('turf', undefined, polygonData, (res) => {
       if (!res.error) {
         // update addresses if within turf
@@ -182,6 +183,7 @@ export default class Map extends Component {
             listener(newPath, 'remove_at');
           });
           // save addresses to db
+          // TODO: use redux actions for this
           Data.post('addresses', undefined, this.props.addresses, (res) => {
             if (res.error) return console.log(res.error); // eslint-disable-line no-console
             return console.log('Turf and addresses saved!'); // eslint-disable-line no-console

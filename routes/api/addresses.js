@@ -18,7 +18,6 @@ router.get('/', (req, res) => {
     if (result) {
       return res.json(result);
     }
-
     return res.json({ error: 'Zero results. Try refining your query.' });
   });
 });

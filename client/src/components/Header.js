@@ -1,19 +1,9 @@
 import React from 'react';
 
-export default class Header extends React.Component {
-  static propTypes = {
-    lock: React.PropTypes.object,
-  }
+const Header = () => (
+  <div className="header">
+    <span className="header-logo" />
+  </div>
+);
 
-  showLock = () => {
-    this.props.lock.show();
-  }
-
-  render() {
-    return (
-      <div className="header">
-        <span className="header-logo" />
-      </div>
-    );
-  }
-}
+export default Header;

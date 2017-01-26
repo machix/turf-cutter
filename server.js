@@ -41,16 +41,15 @@ mongo.connectToServer((err) => {
   if (err) throw err;
 
   /* start server only if MongoDB is connected */
-
   http.createServer(app).listen(port, (err) => {
-    app.get('/ping', (req, res) => {
-      res.send({ message: 'Server online!' });
-    });
-
     /* eslint-disable global-require */
     app.use('/api', require('./routes/api/index'));
     app.use('/api/turf', require('./routes/api/turf'));
     app.use('/api/addresses', require('./routes/api/addresses'));
     app.use('/api/geocode', require('./routes/api/geocode'));
+
+    app.get('/ping', (req, res) => {
+      res.send({ message: 'Server online!' });
+    });
   });
 });
