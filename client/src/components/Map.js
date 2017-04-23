@@ -6,7 +6,7 @@ import DrawingManager from 'react-google-maps/lib/drawing/DrawingManager';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import Data from '../utils/Data';
 import { colors } from '../utils/helpers';
-import mapStyles from '../utils/map-styles';
+import mapStyles from '../utils/google-map-styles.json';
 
 const AsyncGoogleMap = flow(withGoogleMap, withScriptjs)(props =>
   /* eslint-disable no-undef */
