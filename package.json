@@ -3,11 +3,11 @@
   "version": "0.0.6",
   "repository": {
     "type": "git",
-    "url": "https://github.com/votivate/votivate.git"
+    "url": "https://github.com/votivate/turf-cutter.git"
   },
-  "homepage": "https://github.com/votivate/votivate",
+  "homepage": "https://github.com/votivate/turf-cutter",
   "author": "Cody Gordon",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "babel": {
     "presets": [
       "es2015",
